@@ -3,7 +3,7 @@
 
   services.rex.loginServer = {
     enable = true;
-    accounts.${username}.principals = [ "tailscale:0xhckr@github" ];
+    accounts.${username}.principals = [ "tailscale:hackrdotsh@github" ];
     tailscaleServe.enable = true;
   };
 }
