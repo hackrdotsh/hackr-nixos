@@ -44,6 +44,7 @@
       auto-optimise-store = true;
       download-buffer-size = 524288000;
       extra-substituters = [
+        "https://hackr.snowstead.com/main"
         "https://cache.0xhckr.dev/nix-cache/"
         "https://zed.cachix.org"
         "https://niri.cachix.org"
@@ -51,6 +52,7 @@
         "https://helix.cachix.org"
       ];
       extra-trusted-public-keys = [
+        "snowstead-1-46-2deba651-aedb-4282-8561-687368aa1d2f:lVrVBl3DXDSn9wNozthq0OkBu2KWok88dr6OemJSvfk="
         "cache.0xhckr.dev-1:VTJYAGKFg8G5O7ia2HlJ4dDhgqoGgyq+ItpOr+UGSYw="
         "zed.cachix.org-1:/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU="
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
