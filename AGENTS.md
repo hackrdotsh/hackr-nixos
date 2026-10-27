@@ -20,7 +20,7 @@ This is a personal NixOS flake configuration for a single user (`hackr`, Mohamma
 | Check flake syntax | `nix flake check` |
 | Inspect flake outputs | `nix flake show` |
 | Run a flake app | `nr <app-name>` (nushell alias) |
-| Rebuild (nushell alias) | `rebuild`; also pushes to S3 cache on `infernape` |
+| Rebuild and cache (nushell alias) | `rebuild`; pushes the successful system closure to Snowstead on every NixOS host |
 
 Hosts: `infernape`, `snorlax`, `flareon`
 
@@ -85,7 +85,9 @@ modules/
     dev/default.nix              # git, direnv, android-tools, nil, nixfmt, gcc, cargo, nodejs, bun, jdk, mc
     shell/
       atuin.nix / carapace.nix / starship.nix / zoxide.nix
-      nushell.nix                # Main shell; defines rebuild, nr, code, zc, zic, pokefetch, copy-to-cache
+      nushell.nix                # Main shell; defines nr, code, zc, zic, pokefetch
+      nix-cache.nix              # Snowstead login/upload helpers and rebuild wrappers
+      snowstead-package.nix      # Bundles the CLI; avoids upstream's incompatible pnpm fetcher
     ssh/
       1password-agent.nix / config.nix / keys.nix
       git.nix                    # Drops ~/.gitconfig, ~/work/.gitconfig, ~/dev/.gitconfig
@@ -211,23 +213,26 @@ See `modules/home-manager/ui/niri.nix` for a real example (laptop output block).
 | `affinity-nix` | Affinity suite on Linux |
 | `_1password` | 1Password shell plugins |
 | `nh` | `nh` NixOS helper |
+| `snowstead` | CLI for uploading closures to the shared Snowstead cache |
 | `nix-vscode-extensions` | VS Code extension set |
 | `hytale` | Hytale launcher |
 | `graphite` | Graphite editor |
 
 ---
 
-## Nushell aliases & functions (defined in `modules/home-manager/shell/nushell.nix`)
+## Nushell aliases & functions (defined in `modules/home-manager/shell/`)
 
 | Name | Description |
 |---|---|
-| `rebuild` | `nh os switch ~/nixos`; on `infernape` also signs + pushes to S3 cache |
+| `rebuild` / `re-switch` | `nh os switch ~/nixos`, then upload the active system closure to Snowstead |
+| `re-boot` / `re-test` | Rebuild for boot/test, then upload the selected system closure |
 | `nr <name>` | Run a flake app (`nix run .#<name>`); `nr list` lists available apps |
 | `code [path]` | Open Zed (nohup, detached) |
 | `zc [path]` | `zoxide` jump + open Zed |
 | `zic [path]` | `zoxide` interactive jump + open Zed |
 | `pokefetch` | Fastfetch with a pokémon sprite (hostname as pokémon name) |
-| `copy-to-cache` | Sign + push current system to S3 nix cache (infernape only) |
+| `cache-login` | Prompt for a Snowstead push token and save a local CLI login |
+| `copy-to-cache [path]` | Upload a closure to Snowstead; defaults to `/run/current-system` |
 | `point-and-kill` | Pick a niri window and `kill -9` its PID |
 | `cl` | Clear screen + run `pokefetch` (if not in tmux) |
 | `g` / `gc` / `gp` / `gl` / `gco` | Git shortcuts |
@@ -237,13 +242,34 @@ See `modules/home-manager/ui/niri.nix` for a real example (laptop output block).
 
 ---
 
+## Nix binary cache
+
+All NixOS hosts read from `https://hackr.snowstead.com/main`, alongside upstream
+caches. Snowstead replaces the old S3 cache and signs uploads server-side; the
+old `~/.config/nix/secret.key` and `nixbuilder` AWS profile are no longer used by
+these helpers.
+
+After applying this configuration, open a new Nushell and run `cache-login` on
+each uploading machine with a push token scoped to `hackr`'s `main` cache. The CLI
+stores it in `~/.config/snowstead/config.json`, outside the repository and Nix
+store. Do not put tokens in Nix files or shell command history.
+
+`rebuild`, `re-switch`, `re-boot`, and `re-test` upload only after a successful
+rebuild. Direct `nh`/`nixos-rebuild` invocations do not upload. Use
+`copy-to-cache ./result` for other build outputs, or `copy-to-cache` to upload the
+current system without rebuilding. Upload failures are reported separately;
+they do not undo a successful activation. For `re-boot`, the uploaded root is
+`/nix/var/nix/profiles/system`, not the old running system.
+
+---
+
 ## Machines
 
 ### `infernape`
 - **Hardware.** Desktop PC
 - Primary workstation (`stateVersion = "24.11"`)
 - Imports base `modules/nixos` only (no extra hardware modules)
-- On successful rebuild, pushes the current system closure to the team S3 Nix binary cache
+- Uses the shared Snowstead rebuild/upload workflow, like the other NixOS hosts
 
 ### `flareon`
 - **Hardware.** Framework 13 Pro

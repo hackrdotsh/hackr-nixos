@@ -1058,6 +1058,7 @@
         "nocapture": "nocapture",
         "noctalia": "noctalia",
         "rex": "rex",
+        "snowstead": "snowstead",
         "stylix": "stylix",
         "systems": "systems_8",
         "tuigreet": "tuigreet",
@@ -1206,6 +1207,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "snowstead": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793024372,
+        "narHash": "sha256-CehQ0sukecXkitkj+Tvd53SUGTWh+a9QHNznCQ+YaX0=",
+        "owner": "Polymath-AS",
+        "repo": "snowstead",
+        "rev": "c7a02b8390e5ab05f033a57c7c332a3fd396fe97",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Polymath-AS",
+        "repo": "snowstead",
         "type": "github"
       }
     },

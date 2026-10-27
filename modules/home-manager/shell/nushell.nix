@@ -5,20 +5,9 @@
   inputs,
   system,
   username,
-  osConfig,
   opencode2,
   ...
-}: let
-  postRebuildHook =
-    if osConfig.networking.hostName == "infernape"
-    then ''
-      let res = $env.LAST_EXIT_CODE
-      if ($res == 0) {
-        copy-to-cache
-      }
-    ''
-    else "";
-in {
+}: {
   home.shell.enableNushellIntegration = true;
 
   programs.nushell = {
@@ -44,37 +33,6 @@ in {
         if $env.TMUX? == null {
           pokefetch
         }
-      }
-
-      def copy-to-cache [] {
-        if ($'/home/${username}/.config/nix/secret.key' | path exists) {
-          nix store sign --recursive --key-file ~/.config/nix/secret.key /run/current-system
-          nix copy --to 's3://nix-cache?profile=nixbuilder&endpoint=10.0.11.5:9000&scheme=http' /run/current-system
-          echo "Copied to cache"
-        } else {
-          echo "~/.config/nix/secret.key not found"
-        }
-      }
-
-      def re-switch [] {
-        do {
-          ${pkgs.nh}/bin/nh os switch ~/nixos
-        }
-        ${postRebuildHook}
-      }
-
-      def re-boot [] {
-        do {
-          ${pkgs.nh}/bin/nh os boot ~/nixos
-        }
-        ${postRebuildHook}
-      }
-
-      def re-test [] {
-        do {
-          ${pkgs.nh}/bin/nh os test ~/nixos
-        }
-        ${postRebuildHook}
       }
 
       def nr [

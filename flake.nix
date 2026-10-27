@@ -68,6 +68,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    snowstead = {
+      url = "github:Polymath-AS/snowstead";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     helix = {
       type = "github";
       owner = "helix-editor";
