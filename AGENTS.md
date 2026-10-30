@@ -257,7 +257,16 @@ store. Do not put tokens in Nix files or shell command history.
 `rebuild`, `re-switch`, `re-boot`, and `re-test` upload only after a successful
 rebuild. Direct `nh`/`nixos-rebuild` invocations do not upload. Use
 `copy-to-cache ./result` for other build outputs, or `copy-to-cache` to upload the
-current system without rebuilding. Upload failures are reported separately;
+current system without rebuilding it. On `infernape`, bare `copy-to-cache` and
+the rebuild wrappers also discover other NixOS hosts in `~/nixos` with the same
+Nix platform, build their system closures, and upload them sequentially. Explicit
+`copy-to-cache <path>` uploads only that path. Other hosts still upload only their
+own closure. Peer builds are not activated; their GC roots live in
+`${XDG_STATE_HOME:-~/.local/state}/nixos/cache-builds/<host>` and can be removed
+when those retained builds are no longer needed. All machines must use the same
+configuration and lockfile to reuse the cached outputs.
+
+Upload and peer-build failures are reported separately;
 they do not undo a successful activation. For `re-boot`, the uploaded root is
 `/nix/var/nix/profiles/system`, not the old running system.
 
