@@ -3,7 +3,8 @@
   inputs,
   system,
   ...
-}: let
+}:
+let
   formatters = with pkgs; [
     # nix
     alejandra
@@ -61,13 +62,21 @@
     # typescript + javascript + tsx + jsx + json + jsonc
     biome
   ];
-in {
-  home.packages =
-    [
-      inputs.helix.packages."${system}".default
-    ]
-    ++ debuggers
-    ++ languageServers
-    ++ formatters
-    ++ formattersWithLanguageServers;
+in
+{
+  home.packages = [
+    (inputs.helix.packages."${system}".default.override {
+      grammarOverlays = [
+        (_: prev: {
+          perl = prev.perl.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [ ../../../../patches/helix-perl-bsearch.patch ];
+          });
+        })
+      ];
+    })
+  ]
+  ++ debuggers
+  ++ languageServers
+  ++ formatters
+  ++ formattersWithLanguageServers;
 }
