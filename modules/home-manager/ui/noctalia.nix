@@ -390,7 +390,7 @@
       plugins = {
         enabled = [
           "ycf/mawaqit"
-          "0xhckr/nocapture"
+          "hackrdotsh/nocapture"
         ];
         auto_update = "none";
       };

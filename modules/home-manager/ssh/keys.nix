@@ -1,7 +1,7 @@
 _: {
   home.file = {
-    ".ssh/0xhckr-general.pub" = {
-      source = ../../../ssh/0xhckr-general.pub;
+    ".ssh/hackr-general.pub" = {
+      source = ../../../ssh/hackr-general.pub;
       force = true;
     };
   };

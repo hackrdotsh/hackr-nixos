@@ -194,10 +194,10 @@ in {
         isEssential = true;
         position = 103;
       };
-      "0xhckr.dev" = {
+      "hackr.sh" = {
         id = "00000000-1000-0000-0000-000000000003";
         container = containers.personal.id;
-        url = "https://0xhckr.dev/";
+        url = "https://hackr.sh/";
         isEssential = true;
         position = 104;
       };

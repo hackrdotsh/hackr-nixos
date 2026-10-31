@@ -57,11 +57,6 @@ in
           User ${username}
           Port 22222
 
-        Host knot.0xhckr.dev
-          HostName knot.0xhckr.dev
-          User git
-          Port 2222
-
         Host 10.0.11.5
           HostName 10.0.11.5
           User ${username}
@@ -97,8 +92,8 @@ in
       '';
     };
 
-    ".ssh/0xhckr-general.pub" = {
-      source = ../../../ssh/0xhckr-general.pub;
+    ".ssh/hackr-general.pub" = {
+      source = ../../../ssh/hackr-general.pub;
       force = true;
     };
 
@@ -108,7 +103,7 @@ in
       text = ''
         [[ssh-keys]]
         vault = "Private"
-        item = "0xhckr-general"
+        item = "hackr-general"
       '';
     };
   };
