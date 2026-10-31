@@ -11,17 +11,22 @@
   pkgs-fresh,
   config,
   ...
-}: {
+}:
+{
   imports = [
     inputs.home-manager.darwinModules.home-manager
     ./homebrew.nix
+    ../shared/nix-cache
   ];
 
   nixpkgs.hostPlatform = system;
   nixpkgs.config.allowUnfree = true;
 
   # Enable flakes + the new CLI for `darwin-rebuild --flake`.
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Required by nix-darwin whenever user-scoped options (incl. home-manager)
   # are in play, so it knows which user to apply them for.
@@ -48,7 +53,13 @@
     useUserPackages = true;
     backupFileExtension = "bak";
     extraSpecialArgs = {
-      inherit inputs system username fullName email;
+      inherit
+        inputs
+        system
+        username
+        fullName
+        email
+        ;
       inherit x86_systems aarch64_systems pkgs-fresh;
       hostname = config.networking.hostName;
     };

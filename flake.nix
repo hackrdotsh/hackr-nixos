@@ -264,10 +264,18 @@
         }) applesilicon_systems
       );
 
-      checks.${system}.statix = pkgs.runCommand "statix-check" { } ''
-        src=${pkgs.lib.cleanSource ./.}
-        ${pkgs.statix}/bin/statix check -c $src $src
-        touch $out
-      '';
+      checks.${system} = {
+        statix = pkgs.runCommand "statix-check" { } ''
+          src=${pkgs.lib.cleanSource ./.}
+          ${pkgs.statix}/bin/statix check -c $src $src
+          touch $out
+        '';
+        snowstead-cache =
+          pkgs.runCommand "snowstead-cache-check" { nativeBuildInputs = [ pkgs.nodejs_22 ]; }
+            ''
+              node --test ${./modules/shared/nix-cache}/queue.test.mjs
+              touch $out
+            '';
+      };
     };
 }

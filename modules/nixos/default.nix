@@ -7,5 +7,6 @@
     ./styles
     ./system
     ./virtualization
+    ../shared/nix-cache
   ];
 }

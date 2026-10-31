@@ -6,7 +6,9 @@
   ...
 }:
 let
-  snowstead = pkgs.callPackage ./snowstead-package.nix { src = inputs.snowstead; };
+  snowstead = pkgs.callPackage ../../shared/nix-cache/snowstead-package.nix {
+    src = inputs.snowstead;
+  };
 in
 {
   home.packages = [ snowstead ];
@@ -14,16 +16,7 @@ in
   programs.nushell = {
     shellAliases.rebuild = "re-switch";
     extraConfig = ''
-      def cache-login [] {
-        let token = (input --suppress-output "Snowstead push token: ")
-        if ($token | is-empty) {
-          error make {msg: "A Snowstead push token is required."}
-        }
-        ${snowstead}/bin/snowstead login snowstead https://cache.snowstead.com $token
-        if $env.LAST_EXIT_CODE != 0 {
-          error make {msg: "Snowstead login failed."}
-        }
-      }
+      ${import ../../shared/nix-cache/login.nix { inherit snowstead; }}
 
       def upload-cache-closure [path: string] {
         ${snowstead}/bin/snowstead push main --server snowstead --closure $path

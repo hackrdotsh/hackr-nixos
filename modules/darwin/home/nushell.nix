@@ -1,9 +1,17 @@
 # Nushell config. Nushell itself comes from Homebrew (see ../homebrew.nix);
 # here we only manage its config files. On macOS nushell reads its config from
 # ~/Library/Application Support/nushell, not ~/.config/nushell.
-{ username, ... }:
+{
+  username,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   configDir = "Library/Application Support/nushell";
+  snowstead = pkgs.callPackage ../../shared/nix-cache/snowstead-package.nix {
+    src = inputs.snowstead;
+  };
 in
 {
   home.file = {
@@ -41,6 +49,8 @@ in
       def re-switch [] { nh darwin switch ~/nixos }
       def re-test [] { nh darwin build ~/nixos }
       def re-boot [] { nh darwin switch ~/nixos }
+
+      ${import ../../shared/nix-cache/login.nix { inherit snowstead; }}
 
       # Launch Zed. The `zed` CLI is on PATH via the Homebrew cask.
       # Expands a leading `~`, which string args skip in nushell.

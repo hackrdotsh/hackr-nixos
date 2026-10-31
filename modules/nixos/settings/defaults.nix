@@ -3,7 +3,8 @@
   pkgs-stable,
   username,
   ...
-}: {
+}:
+{
   boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -27,7 +28,7 @@
   nixpkgs.overlays = [
     (final: prev: {
       openssh = prev.openssh.overrideAttrs (old: {
-        patches = (old.patches or []) ++ [../../../patches/openssh.patch];
+        patches = (old.patches or [ ]) ++ [ ../../../patches/openssh.patch ];
         doCheck = false;
       });
     })
@@ -44,14 +45,12 @@
       auto-optimise-store = true;
       download-buffer-size = 524288000;
       extra-substituters = [
-        "https://hackr.snowstead.com/main"
         "https://zed.cachix.org"
         "https://niri.cachix.org"
         "https://ghostty.cachix.org"
         "https://helix.cachix.org"
       ];
       extra-trusted-public-keys = [
-        "snowstead-1-46-2deba651-aedb-4282-8561-687368aa1d2f:lVrVBl3DXDSn9wNozthq0OkBu2KWok88dr6OemJSvfk="
         "zed.cachix.org-1:/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU="
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
         "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
@@ -71,5 +70,8 @@
       pkgs.nodejs
     ];
 
-  users.users.${username}.extraGroups = ["networkmanager" "wheel"];
+  users.users.${username}.extraGroups = [
+    "networkmanager"
+    "wheel"
+  ];
 }

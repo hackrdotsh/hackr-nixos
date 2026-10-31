@@ -87,7 +87,6 @@ modules/
       atuin.nix / carapace.nix / starship.nix / zoxide.nix
       nushell.nix                # Main shell; defines nr, code, zc, zic, pokefetch
       nix-cache.nix              # Snowstead login/upload helpers and rebuild wrappers
-      snowstead-package.nix      # Bundles the CLI; avoids upstream's incompatible pnpm fetcher
     ssh/
       1password-agent.nix / config.nix / keys.nix
       git.nix                    # Drops ~/.gitconfig, ~/work/.gitconfig, ~/dev/.gitconfig
@@ -99,6 +98,8 @@ modules/
                                  # plugins are Luau (<author>/<plugin>), palette via customPalettes
     work/
       azure.nix
+  shared/
+    nix-cache/                   # Snowstead CLI, nonblocking build hook, queue, OS upload services
 cfg/                             # Static config files symlinked into ~/.config/ via links.nix
   atuin/ btop/ direnv/ fastfetch/
   niri/                          # delayed (startup script), laptop-outputs.kdl (snorlax/flareon)
@@ -232,6 +233,7 @@ See `modules/home-manager/ui/niri.nix` for a real example (laptop output block).
 | `zic [path]` | `zoxide` interactive jump + open Zed |
 | `pokefetch` | Fastfetch with a pokémon sprite (hostname as pokémon name) |
 | `cache-login` | Prompt for a Snowstead push token and save a local CLI login |
+| `cache-status` | List build outputs queued for automatic Snowstead upload on either OS |
 | `copy-to-cache [path]` | Upload a closure to Snowstead; defaults to `/run/current-system` |
 | `point-and-kill` | Pick a niri window and `kill -9` its PID |
 | `cl` | Clear screen + run `pokefetch` (if not in tmux) |
@@ -244,7 +246,7 @@ See `modules/home-manager/ui/niri.nix` for a real example (laptop output block).
 
 ## Nix binary cache
 
-All NixOS hosts read from `https://hackr.snowstead.com/main`, alongside upstream
+All NixOS and nix-darwin hosts read from `https://hackr.snowstead.com/main`, alongside upstream
 caches. Snowstead replaces the old S3 cache and signs uploads server-side; the
 old `~/.config/nix/secret.key` and `nixbuilder` AWS profile are no longer used by
 these helpers.
@@ -254,8 +256,33 @@ each uploading machine with a push token scoped to `hackr`'s `main` cache. The C
 stores it in `~/.config/snowstead/config.json`, outside the repository and Nix
 store. Do not put tokens in Nix files or shell command history.
 
+Every configured NixOS and nix-darwin host automatically queues newly built Nix
+outputs for upload. The post-build hook only creates local GC-root symlinks under
+`/nix/var/nix/gcroots/snowstead-auto`; it never contacts Snowstead or fails a build.
+The queue survives reboots and protects pending outputs from garbage collection.
+An uploader runs as `hackr`, using the login above, once per minute while idle.
+It uploads each output's closure and removes its queue root only after success.
+Network, authentication, or upload failures retain the pending roots for retry.
+The OS service manager prevents overlapping uploader runs.
+
+Run `cache-status` to inspect the queue. On NixOS, inspect logs with
+`journalctl -u snowstead-cache` and retry now with
+`sudo systemctl start snowstead-cache`. On macOS, logs are in
+`/var/log/snowstead-cache.log`; retry with
+`sudo launchctl kickstart system/org.nixos.snowstead-cache`.
+Disable automatic uploads declaratively with
+`services.snowstead-cache.enable = false;`. Disabling does not delete pending
+roots; remove unwanted symlinks from the queue explicitly to release them.
+
+Automatic uploads cover actual Nix builds, not previously existing outputs,
+substituted paths on their own, or plain `cargo`/`bun` builds outside Nix. Private
+project outputs and source-containing store paths can be uploaded too; confirm
+the destination cache's read access before building sensitive projects. Platforms
+share one cache, but only identical store paths are reusable across machines.
+
 `rebuild`, `re-switch`, `re-boot`, and `re-test` upload only after a successful
-rebuild. Direct `nh`/`nixos-rebuild` invocations do not upload. Use
+rebuild. These NixOS wrappers still upload synchronously in addition to automatic
+build-output uploads; direct Nix commands only use the automatic queue. Use
 `copy-to-cache ./result` for other build outputs, or `copy-to-cache` to upload the
 current system without rebuilding it. On `infernape`, bare `copy-to-cache` and
 the rebuild wrappers also discover other NixOS hosts in `~/nixos` with the same
