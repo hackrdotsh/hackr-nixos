@@ -123,12 +123,6 @@ in {
     # ++ affinityApps
     ++ browsers;
 
-  # needed for vicinae to properly launch x apps in niri
-  systemd.user.settings.Manager.DefaultEnvironment = {
-    DISPLAY = ":0";
-    XAUTHORITY = "$HOME/.Xauthority";
-  };
-
   programs = {
     _1password-shell-plugins.enable = true;
     zsh.enable = true;
