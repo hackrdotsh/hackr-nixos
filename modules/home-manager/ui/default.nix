@@ -8,6 +8,7 @@
 {
   imports = [
     ./niri.nix
+    ./umbriel.nix
     ./noctalia.nix
     ./nocapture.nix
     inputs.vicinae.homeManagerModules.default

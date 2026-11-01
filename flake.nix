@@ -50,6 +50,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    umbriel = {
+      url = "github:noctalia-dev/umbriel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nocapture = {
       url = "github:hackrdotsh/nocapture";
       inputs.nixpkgs.follows = "nixpkgs";
