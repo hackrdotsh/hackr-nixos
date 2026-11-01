@@ -28,5 +28,5 @@
     xwayland-satellite
   ];
 
-  services.displayManager.defaultSession = lib.mkForce "niri";
+  # services.displayManager.defaultSession = lib.mkForce "niri";
 }
