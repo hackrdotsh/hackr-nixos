@@ -836,6 +836,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-cli": {
+      "locked": {
+        "lastModified": 1791048980,
+        "narHash": "sha256-KgItSKML8Xvte0B7/uGnBDsYzSnnKHcOaiUbgWBXLXw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a7868a727837f3c09cee2ce0ca671c76b1589fed",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a7868a727837f3c09cee2ce0ca671c76b1589fed",
+        "type": "github"
+      }
+    },
     "nixpkgs-darwin": {
       "locked": {
         "lastModified": 1793147889,
@@ -1221,14 +1237,15 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
-        ]
+        ],
+        "nixpkgs-cli": "nixpkgs-cli"
       },
       "locked": {
-        "lastModified": 1793281862,
-        "narHash": "sha256-vfKbrJCutCsq6bMch2zpNywtlbRhPAz4nZCVfHcR9QU=",
+        "lastModified": 1793535130,
+        "narHash": "sha256-guAYfqB3a/UBDjjz+gJfbJzR5al19R1DNYMFI02wkCo=",
         "owner": "Polymath-AS",
         "repo": "snowstead",
-        "rev": "20952c25b278478a568b7ea7d6077d0ad38253ee",
+        "rev": "6504f8359208f4bc203732a4cdeb3c57f5083414",
         "type": "github"
       },
       "original": {
