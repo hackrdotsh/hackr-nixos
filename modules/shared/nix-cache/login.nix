@@ -5,7 +5,7 @@
     if ($token | is-empty) {
       error make {msg: "A Snowstead push token is required."}
     }
-    ${snowstead}/bin/snowstead login snowstead https://cache.snowstead.com $token
+    $token | ${snowstead}/bin/snowstead login --name snowstead --url https://cache.snowstead.com --token-stdin
     if $env.LAST_EXIT_CODE != 0 {
       error make {msg: "Snowstead login failed."}
     }

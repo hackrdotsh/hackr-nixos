@@ -73,7 +73,6 @@ test("successful uploads include closures and release their GC roots", (t) => {
     "main",
     "--server",
     "snowstead",
-    "--closure",
   ]);
   assert.equal(calls[0][2].timeout, 3600000);
   assert.deepEqual(pending(queue), []);

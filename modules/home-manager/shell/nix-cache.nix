@@ -19,7 +19,7 @@ in
       ${import ../../shared/nix-cache/login.nix { inherit snowstead; }}
 
       def upload-cache-closure [path: string] {
-        ${snowstead}/bin/snowstead push main --server snowstead --closure $path
+        ${snowstead}/bin/snowstead push main --server snowstead $path
         if $env.LAST_EXIT_CODE != 0 {
           error make {msg: "Snowstead upload failed. Check cache-login and retry copy-to-cache with the same path."}
         }

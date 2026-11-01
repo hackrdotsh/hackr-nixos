@@ -52,7 +52,7 @@ export function upload(queue, snowstead, run = spawnSync) {
     console.log(`Uploading ${path}`);
     const result = run(
       snowstead,
-      ["push", "main", "--server", "snowstead", "--closure", path],
+      ["push", "main", "--server", "snowstead", path],
       { stdio: "inherit", timeout: 60 * 60 * 1000 },
     );
     if (result.error || result.status !== 0) {
