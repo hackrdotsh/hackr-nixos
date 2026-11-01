@@ -1,4 +1,6 @@
 {
+  config,
+  hostname,
   inputs,
   lib,
   pkgs,
@@ -6,6 +8,8 @@
 }:
 let
   defaults = builtins.fromTOML (builtins.readFile "${inputs.umbriel}/examples/config.toml");
+  laptop = hostname == "snorlax" || hostname == "flareon";
+  configDir = "${config.xdg.configHome}/umbriel";
   once = action: {
     inherit action;
     repeat = false;
@@ -29,7 +33,11 @@ in
         autostart = [
           "noctalia"
           "vicinae server"
-        ];
+          "1password --silent"
+          "tailscale-systray"
+        ]
+        ++ lib.optional laptop "slack";
+        xwayland_native_resolution = true;
       };
       input = lib.recursiveUpdate defaults.input {
         middle_click_paste = false;
@@ -44,7 +52,113 @@ in
         };
         mouse.accel_profile = "flat";
         focus.follows_mouse = true;
-        cursor.follows_focus = true;
+        cursor = {
+          follows_focus = true;
+          theme = "BreezeX-RosePine-Linux";
+        };
+      };
+      output = {
+        "LG Electronics LG ULTRAGEAR+ 503NTNH4U183" = {
+          mode = "5120x2160@165.058";
+          scale = 1.0;
+          position = [
+            0
+            0
+          ];
+        };
+      }
+      // lib.optionalAttrs laptop {
+        "China Star Optoelectronics Technology Co., Ltd MND508ZB1-1 Unknown" = {
+          mode = "2880x1920@120.000";
+          scale = 1.5;
+          position = [
+            0
+            0
+          ];
+          layout.scrolling.default_extent_fraction = 1.0;
+        };
+        "AU Optronics 0x749D Unknown" = {
+          mode = "3840x2160@144.001";
+          scale = 1.25;
+          position = [
+            7680
+            0
+          ];
+          layout.scrolling.default_extent_fraction = 1.0;
+        };
+        "DP-4" = {
+          mode = "3840x2160@29.970";
+          scale = 1.0;
+          position = [
+            3840
+            0
+          ];
+        };
+        "HDMI-A-1" = {
+          mode = "3840x2160@60.000";
+          scale = 1.0;
+          position = [
+            0
+            0
+          ];
+        };
+        "DP-1" = {
+          mode = "3840x2160@60.000";
+          scale = 1.0;
+          position = [
+            3840
+            0
+          ];
+        };
+        "DP-2" = {
+          mode = "3840x2160@60.000";
+          scale = 1.0;
+          position = [
+            0
+            0
+          ];
+        };
+      };
+      appearance = lib.recursiveUpdate defaults.appearance {
+        prefer_no_csd = true;
+        border_width = 2;
+        corner_radius = 0;
+        shadow.enabled = false;
+        blur = {
+          enabled = true;
+          passes = 3;
+          # Umbriel's radius is integral; Niri used offset 2.5.
+          radius = 3;
+          noise = 0.02;
+          saturation = 1.25;
+          brightness = 1.0;
+          contrast = 1.0;
+        };
+        tab_bar = {
+          style = "indicator";
+          position = "left";
+          height = 8;
+          gap = 0;
+          tab_gap = 0;
+          corner_radius = 0;
+        };
+      };
+      colors = {
+        # Umbriel borders do not support Niri's two-color focus gradient.
+        border = {
+          focused = "#3d434c";
+          unfocused = "#18191d";
+        };
+        tab_bar = {
+          active = "#4d525a";
+          active_unfocused = "#171717";
+          background = "#171717";
+          urgent = "#4e2c2c";
+        };
+        overview = {
+          background_tint = "#171717";
+          workspace_background = "#00000000";
+        };
       };
       layout = defaults.layout // {
         mode = "scrolling";
@@ -81,6 +195,53 @@ in
         }
       ];
       window_rule = defaults.window_rule ++ [
+        {
+          match.is_floating = true;
+          blur_optimized = false;
+        }
+        {
+          match.is_focused = false;
+          opacity = 0.85;
+        }
+        {
+          match.is_focused = true;
+          opacity = 1.0;
+        }
+        {
+          match = {
+            app_id = [
+              "zen$"
+              "zen-twilight$"
+            ];
+            title = "^Picture-in-Picture$";
+          };
+          default_focused = false;
+        }
+        {
+          match.app_id = [
+            "^org.gnome.NautilusPreviewer$"
+            "^zab$"
+            "^mongolore$"
+          ];
+          default_floating = true;
+        }
+        {
+          match.app_id = "^org.pulseaudio.pavucontrol$";
+          default_floating = true;
+          # Umbriel can set the opening size, not Niri's minimum size.
+          default_floating_size_px = {
+            width = 800;
+            height = 600;
+          };
+        }
+        {
+          match.app_id = "steam_app_1808500";
+          default_fullscreen = true;
+        }
+        {
+          match.app_id = "1password";
+          block_capture = true;
+        }
         {
           match.app_id = ''^dev\.hackr\.scratchterm$'';
           default_scratchpad = "terminal";
@@ -194,4 +355,17 @@ in
       };
     };
   };
+
+  xdg.configFile."umbriel/config.toml" = {
+    target = "umbriel/config-settings.toml";
+    force = true;
+  };
+
+  # Keep the live config editable; rebuilds restore the declarative baseline.
+  home.activation.linkUmbrielSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run ${lib.getExe config.programs.umbriel.package} config validate -c ${lib.escapeShellArg "${configDir}/config-settings.toml"}
+    run ${pkgs.coreutils}/bin/install -m 0644 -T -- \
+      ${lib.escapeShellArg "${configDir}/config-settings.toml"} \
+      ${lib.escapeShellArg "${configDir}/config.toml"}
+  '';
 }

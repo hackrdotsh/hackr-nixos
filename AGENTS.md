@@ -94,6 +94,8 @@ modules/
       ghostty.nix                # Ghostty config (DepartureMono Nerd Font, rose-pine theme, keybinds)
     ui/
       niri.nix                   # Writes ~/.config/niri/config-original.kdl (KDL, host-aware outputs)
+      umbriel.nix                # Writes ~/.config/umbriel/config-settings.toml, validates and copies
+                                 # it to writable config.toml on activation; host-aware outputs
       noctalia.nix               # Noctalia v5 config (attrset -> TOML config.toml, build-validated);
                                  # plugins are Luau (<author>/<plugin>), palette via customPalettes
     work/
@@ -171,7 +173,7 @@ home.activation.myFixup = lib.hm.dag.entryAfter ["linkGeneration"] ''
   cp -L ~/.config/app/template.json ~/.config/app/live.json
 '';
 ```
-This pattern is used for niri (`config-original.kdl` → `config.kdl`) and zed settings so that the live files are mutable at runtime while the source remains managed by Nix. Noctalia v5 no longer needs it (GUI writes to `~/.local/state/noctalia/settings.toml`, which layers over the Nix `config.toml`).
+This pattern is used for niri (`config-original.kdl` → `config.kdl`), Umbriel (`config-settings.toml` → `config.toml`), and zed settings so that the live files are mutable at runtime while the source remains managed by Nix. Umbriel's activation validates the template and installs the live file with mode `0644`; local edits survive until the next activation, which restores the Nix baseline. Noctalia v5 no longer needs it (GUI writes to `~/.local/state/noctalia/settings.toml`, which layers over the Nix `config.toml`).
 
 ### Theming
 - Stylix drives the system-wide base16 theme (`rose-pine`). To opt a target out: `stylix.targets.<name>.enable = false;` (see `editor/default.nix` for Zed).
