@@ -5,8 +5,9 @@
   email,
   system,
   ...
-}: {
-  imports = [./claude.nix ./herdr.nix];
+}:
+{
+  imports = [ ./claude.nix ];
 
   home.packages = with pkgs; [
     android-tools
@@ -30,7 +31,6 @@
     inputs.jj-starship.packages."${system}".jj-starship
     inputs.gojo.packages."${system}".default
     inputs.co.packages."${system}".default
-    inputs.herdr.packages."${system}".default
     inputs.aarch64-tui.packages."${system}".a64tui
   ];
 

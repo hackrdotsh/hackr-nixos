@@ -34,6 +34,8 @@ in
   home.packages = [
     agents.claude-code
     agents.crush
+    agents.herdr-app
+    agents.herdr-core
     opencode2
   ];
 

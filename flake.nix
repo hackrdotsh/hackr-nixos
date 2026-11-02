@@ -148,14 +148,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    herdr = {
-      type = "github";
-      owner = "hackrdotsh";
-      repo = "herdr";
-      ref = "focus-on-hover";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     ai-usagebar = {
       url = "github:akitaonrails/ai-usagebar";
       inputs.nixpkgs.follows = "nixpkgs";
