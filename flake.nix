@@ -11,6 +11,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    rexadb = {
+      # Includes the diagnostic opt-out added in PR #86.
+      url = "github:RexaDB/RexaDB/5a71a9a94f1511e366557046b8c5741b6c7a6d71";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Local systems set: default minus x86_64-darwin (dropped by nixpkgs 26.11).
     # Bun2nix-based inputs below follow this so they don't evaluate x86_64-darwin.
     systems = {

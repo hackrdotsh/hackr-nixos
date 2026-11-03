@@ -350,6 +350,24 @@
     },
     "flake-parts_2": {
       "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1790898470,
+        "narHash": "sha256-zTwuwezD0w3hpga6a6P8emidzAZFyWqlNeRBlpWOOl8=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "024633cd702b10285db5cb19b40ad48d2399ba60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_3": {
+      "inputs": {
         "nixpkgs-lib": [
           "stylix",
           "nixpkgs"
@@ -369,9 +387,9 @@
         "type": "github"
       }
     },
-    "flake-parts_3": {
+    "flake-parts_4": {
       "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib"
+        "nixpkgs-lib": "nixpkgs-lib_2"
       },
       "locked": {
         "lastModified": 1769996383,
@@ -864,6 +882,21 @@
     },
     "nixpkgs-lib": {
       "locked": {
+        "lastModified": 1790477367,
+        "narHash": "sha256-oujbxmVKDhci2E4EM3KyAbRUgp5/IsCoiA/LfEF7OOk=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "f7cd230690d9fc982d06129f9189b101fddcfa3b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "nixpkgs-lib_2": {
+      "locked": {
         "lastModified": 1769909678,
         "narHash": "sha256-cBEymOf4/o3FD5AZnzC3J9hLbiZ+QDT/KDuyHXVJOpM=",
         "owner": "nix-community",
@@ -1029,6 +1062,28 @@
         "url": "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz"
       }
     },
+    "rexadb": {
+      "inputs": {
+        "flake-parts": "flake-parts_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793655926,
+        "narHash": "sha256-S//XN/CWkwYPxg1B6SYjeUavYxL8sLdg1v0BY/vWV3Y=",
+        "owner": "RexaDB",
+        "repo": "RexaDB",
+        "rev": "5a71a9a94f1511e366557046b8c5741b6c7a6d71",
+        "type": "github"
+      },
+      "original": {
+        "owner": "RexaDB",
+        "repo": "RexaDB",
+        "rev": "5a71a9a94f1511e366557046b8c5741b6c7a6d71",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "_1password": "_1password",
@@ -1057,6 +1112,7 @@
         "nocapture": "nocapture",
         "noctalia": "noctalia",
         "rex": "rex",
+        "rexadb": "rexadb",
         "snowstead": "snowstead",
         "stylix": "stylix",
         "systems": "systems_8",
@@ -1239,7 +1295,7 @@
         "base16-helix": "base16-helix",
         "base16-vim": "base16-vim",
         "firefox-gnome-theme": "firefox-gnome-theme",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "gnome-shell": "gnome-shell",
         "nixpkgs": [
           "nixpkgs"
@@ -1591,7 +1647,7 @@
     "zed": {
       "inputs": {
         "crane": "crane_2",
-        "flake-parts": "flake-parts_3",
+        "flake-parts": "flake-parts_4",
         "nixpkgs": "nixpkgs_2",
         "rust-overlay": "rust-overlay_5"
       },
